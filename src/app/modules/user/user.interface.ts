@@ -1,5 +1,4 @@
 export enum EUserRole {
-  USER = "user",
   ADMIN = "admin",
   SUPERADMIN = "superadmin",
 }
@@ -12,4 +11,5 @@ export interface IUser {
   role: TUserRole;
   createdAt?: Date;
   updatedAt?: Date;
+  isActive?: boolean;
 }

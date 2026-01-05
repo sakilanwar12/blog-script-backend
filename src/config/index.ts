@@ -9,6 +9,7 @@ type EnvVariables = {
   MONGODB_URI: string;
   SUPERADMIN_EMAIL: string;
   SUPERADMIN_PASSWORD: string;
+  JWT_SECRET: string;
 };
 export const envVariables: EnvVariables = {
     node_env: process.env.NODE_ENV as "development" | "production" | "test",
@@ -16,4 +17,5 @@ export const envVariables: EnvVariables = {
     MONGODB_URI: process.env.MONGODB_URI!,
     SUPERADMIN_PASSWORD: process.env.SUPERADMIN_PASSWORD!,
     SUPERADMIN_EMAIL: process.env.SUPERADMIN_EMAIL!,
+    JWT_SECRET: process.env.JWT_SECRET!,
 } ;
