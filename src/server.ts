@@ -1,5 +1,6 @@
 import app from "./app";
 import connectDB from "./lib/conectDB";
+import { seedSuperAdmin } from "./lib/seedSuperAdmin";
 
 let server;
 const port = process.env.PORT || 3000;
@@ -7,6 +8,8 @@ const bootstrap = async () => {
 
     try {
         await connectDB();
+        await seedSuperAdmin();
+
         server = app.listen(port, () => {
             console.log(`Server running on port ${port}`);
             console.log(`http://localhost:${port}`);
