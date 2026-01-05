@@ -1,10 +1,9 @@
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../user/user.model";
 import { envVariables } from "../../../config";
 
- const loginService = async (email: string, password: string) => {
+const loginService = async (email: string, password: string) => {
   if (!email || !password) {
     throw new Error("Email and password are required");
   }
@@ -28,7 +27,7 @@ import { envVariables } from "../../../config";
   const token = jwt.sign(
     {
       userId: user._id,
-      role: user.role
+      role: user.role,
     },
     envVariables.JWT_SECRET,
     { expiresIn: "7d" }
@@ -40,11 +39,11 @@ import { envVariables } from "../../../config";
       id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role
-    }
+      role: user.role,
+    },
   };
 };
 
 export const AuthService = {
-    loginService
-}
+  loginService,
+};
