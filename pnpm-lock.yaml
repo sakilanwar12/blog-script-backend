@@ -20,6 +20,9 @@ importers:
       http-status:
         specifier: ^2.1.0
         version: 2.1.0
+      js-utility-method:
+        specifier: ^2.0.4
+        version: 2.0.4
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -376,6 +379,9 @@ packages:
 
   is-promise@4.0.0:
     resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
+
+  js-utility-method@2.0.4:
+    resolution: {integrity: sha512-y9nNv+0ITpIRL3a/OwGvYD2Qi5qjDTxGi0IQJFNGHC74gjXNr2070Ba9qApUflV+A/QcLm2MhLW8ot9cObzPqw==}
 
   jsonwebtoken@9.0.3:
     resolution: {integrity: sha512-MT/xP0CrubFRNLNKvxJ2BYfy53Zkm++5bX9dtuPbqAeQpTVe0MQTFhao8+Cp//EmJp244xt6Drw/GVEGCUj40g==}
@@ -1090,6 +1096,8 @@ snapshots:
   is-number@7.0.0: {}
 
   is-promise@4.0.0: {}
+
+  js-utility-method@2.0.4: {}
 
   jsonwebtoken@9.0.3:
     dependencies:

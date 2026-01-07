@@ -4,7 +4,7 @@ import { IBlog } from "./blog.interface";
 const blogSchema = new Schema<IBlog>(
   {
     title: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, required: false, unique: true },
     content: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     status: { type: String, enum: ["draft", "published"], default: "draft" },

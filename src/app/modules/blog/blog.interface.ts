@@ -9,7 +9,6 @@ export type TBlogStatus = `${EBlogStatus}`;
 
 export interface ICreateBlog {
   title: string;
-  slug: string;
   content: string;
   authorId: string;
   status?: TBlogStatus;
