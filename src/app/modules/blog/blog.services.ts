@@ -19,16 +19,70 @@ const createBlog = async (input: ICreateBlog): Promise<IBlog> => {
   });
   return blog;
 };
-const getAllBlogs = async (): Promise<IBlog[]> => {
-  const blogs = await blogModel
-    .find({
-      isDeleted: false,
-    })
-    .populate("author", "_id name email")
-    .sort({ createdAt: -1 });
+const getAllBlogs = async (
+  query: {
+    search?: string;
+    page?: number;
+    limit?: number;
+  }
+): Promise<{
+  data: IBlog[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}> => {
+  const {
+    search = "",
+    page = 1,
+    limit = 10,
+  } = query;
 
-  return blogs;
+  const skip = (page - 1) * limit;
+
+  const filter: any = {
+    isDeleted: false,
+  };
+
+  // 🔍 Search
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { content: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const [blogs, total] = await Promise.all([
+    blogModel
+      .find(filter)
+      .populate("author", "_id name email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+
+    blogModel.countDocuments(filter),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return {
+    data: blogs,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    },
+  };
 };
+
 const getABlog = async (slug: string): Promise<IBlog> => {
   const blog = await blogModel
     .findOne({ slug })
