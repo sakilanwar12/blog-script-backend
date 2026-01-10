@@ -19,6 +19,28 @@ const createBlog = async (input: ICreateBlog): Promise<IBlog> => {
   });
   return blog;
 };
+const getAllBlogs = async (): Promise<IBlog[]> => {
+  const blogs = await blogModel
+    .find({
+      isDeleted: false,
+    })
+    .populate("author", "_id name email")
+    .sort({ createdAt: -1 });
+
+  return blogs;
+};
+const getABlog = async (slug: string): Promise<IBlog> => {
+  const blog = await blogModel
+    .findOne({ slug })
+    .populate("author", "_id name email");
+
+  if (!blog) {
+    throw new AppError(404, "Blog not found");
+  }
+
+  return blog;
+};
+
 const updateBlog = async (
   blogId: string,
   payload: Partial<{
@@ -27,7 +49,6 @@ const updateBlog = async (
     status: "draft" | "published";
   }>
 ): Promise<IBlog | null> => {
-
   if (!payload || Object.keys(payload).length === 0) {
     throw new AppError(400, "Update payload is required");
   }
@@ -64,8 +85,22 @@ const updateBlog = async (
 
   return blog;
 };
+const deleteABlog = async (blogId: string) => {
+  const blog = await blogModel.findById(blogId);
 
+  if (!blog || blog.isDeleted) {
+    throw new AppError(404, "Blog not found");
+  }
+
+  blog.isDeleted = true;
+  await blog.save();
+
+  return blog;
+};
 export const BlogService = {
   createBlog,
   updateBlog,
+  getAllBlogs,
+  getABlog,
+  deleteABlog,
 };

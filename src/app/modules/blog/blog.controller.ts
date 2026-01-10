@@ -14,8 +14,29 @@ const createBlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllBlogs = catchAsync(async (req: Request, res: Response) => {
+  const result = await BlogService.getAllBlogs();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Blogs fetched successfully",
+    data: result,
+  });
+});
+
+const getABlog = catchAsync(async (req: Request, res: Response) => {
+  const result = await BlogService.getABlog(req.params.slug);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Blog fetched successfully",
+    data: result,
+  });
+});
+
 const updateBlog = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.body)
   const result = await BlogService.updateBlog(req.params.id, req.body);
   sendResponse(res, {
     statusCode: 200,
@@ -25,7 +46,20 @@ const updateBlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteABlog = catchAsync(async (req: Request, res: Response) => {
+  const result = await BlogService.deleteABlog(req.params.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Blog deleted successfully",
+    data: result,
+  });
+});
+
 export const BlogController = {
   createBlog,
+  getAllBlogs,
+  getABlog,
   updateBlog,
+  deleteABlog,
 };

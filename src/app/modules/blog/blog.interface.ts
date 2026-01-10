@@ -20,6 +20,7 @@ export interface IBlog extends Document {
   content: string;
   author: Types.ObjectId;
   status: TBlogStatus;
+  isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

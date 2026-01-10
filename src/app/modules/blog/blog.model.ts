@@ -8,6 +8,10 @@ const blogSchema = new Schema<IBlog>(
     content: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     status: { type: String, enum: ["draft", "published"], default: "draft" },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
