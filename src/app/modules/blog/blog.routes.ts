@@ -5,10 +5,25 @@ import { checkAuth } from "../../middlewares/checkAuth";
 
 const router = Router();
 
-router.post("/",auth,checkAuth("admin"), BlogController.createBlog);
+router.post(
+  "/",
+  auth,
+  checkAuth("admin", "superadmin"),
+  BlogController.createBlog
+);
 router.get("/", BlogController.getAllBlogs);
 router.get("/:slug", BlogController.getABlog);
-router.patch("/:id", BlogController.updateBlog);
-router.delete("/:id", BlogController.deleteABlog);
+router.patch(
+  "/:id",
+  auth,
+  checkAuth("admin", "superadmin"),
+  BlogController.updateBlog
+);
+router.delete(
+  "/:id",
+  auth,
+  checkAuth("admin", "superadmin"),
+  BlogController.deleteABlog
+);
 
 export const blogRoutes = router;

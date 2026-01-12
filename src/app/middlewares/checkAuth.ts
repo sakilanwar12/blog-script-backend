@@ -19,7 +19,7 @@ export const checkAuth =
         success: false,
         data: null,
         message: "Forbidden: Access denied",
-        statusCode: 401,
+        statusCode: 403,
       });
     }
 

@@ -16,7 +16,16 @@ export const auth = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const authHeader = req.headers.authorization;
+    let token;
+
+    if (authHeader) {
+      if (authHeader.startsWith("Bearer ")) {
+        token = authHeader.split(" ")[1];
+      } else {
+        token = authHeader;
+      }
+    }
 
     if (!token) {
       return res.status(401).json({
@@ -25,10 +34,10 @@ export const auth = async (
       });
     }
 
-    const decoded = jwt.verify(
-      token,
-      envVariables.JWT_SECRET
-    ) as { userId: string; role: string };
+    const decoded = jwt.verify(token, envVariables.JWT_SECRET) as {
+      userId: string;
+      role: string;
+    };
 
     const user = await User.findById(decoded.userId);
 
