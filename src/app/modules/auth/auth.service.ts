@@ -3,25 +3,31 @@ import jwt from "jsonwebtoken";
 import User from "../user/user.model";
 import { envVariables } from "../../../config";
 
+import { AppError } from "../../../lib/AppError";
+import httpStatus from "http-status";
+
 const loginService = async (email: string, password: string) => {
   if (!email || !password) {
-    throw new Error("Email and password are required");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Email and password are required",
+    );
   }
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid credentials");
   }
 
   if (!user.isActive) {
-    throw new Error("Account is disabled");
+    throw new AppError(httpStatus.FORBIDDEN, "Account is disabled");
   }
 
   const isPasswordMatch = await bcrypt.compare(password, user.password);
 
   if (!isPasswordMatch) {
-    throw new Error("Invalid credentials");
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid credentials");
   }
 
   const token = jwt.sign(
@@ -30,7 +36,7 @@ const loginService = async (email: string, password: string) => {
       role: user.role,
     },
     envVariables.JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   return {
