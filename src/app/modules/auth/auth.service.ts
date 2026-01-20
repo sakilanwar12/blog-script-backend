@@ -50,6 +50,15 @@ const loginService = async (email: string, password: string) => {
   };
 };
 
+const getMeService = async (userId: string) => {
+  const user = await User.findById(userId).select("-password");
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+  return user;
+};
+
 export const AuthService = {
   loginService,
+  getMeService,
 };
