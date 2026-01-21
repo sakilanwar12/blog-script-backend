@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller";
-import { loginValidationSchema, refreshTokenValidationSchema } from "./auth.validation";
+import { loginValidationSchema } from "./auth.validation";
 import validateRequest from "../../middlewares/validateRequest";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 
@@ -11,14 +11,14 @@ authRoutes.post(
     validateRequest(loginValidationSchema),
     AuthController.loginController
 );
+authRoutes.post(
+    "/refresh-token",
+    AuthController.refreshTokenController
+);
 authRoutes.get(
     "/me",
     authMiddleware,
     AuthController.meController
 );
-authRoutes.post(
-    "/refresh-token",
-    validateRequest(refreshTokenValidationSchema),
-    AuthController.refreshTokenController
-);
+
 export default authRoutes;
