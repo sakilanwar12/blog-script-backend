@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import User from "../user/user.model";
 import { envVariables } from "../../../config";
 
 import { AppError } from "../../../lib/AppError";
 import httpStatus from "http-status";
+import { generateToken } from "../../../lib/generateToken";
 
 const loginService = async (email: string, password: string) => {
   if (!email || !password) {
@@ -30,17 +30,27 @@ const loginService = async (email: string, password: string) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "Invalid credentials");
   }
 
-  const token = jwt.sign(
-    {
+
+  const accessToken = generateToken({
+    payload: {
       userId: user._id,
       role: user.role,
     },
-    envVariables.JWT_SECRET,
-    { expiresIn: "7d" },
-  );
+    secret: envVariables.JWT_ACCESS_TOKEN,
+    expiresIn: "5m",
+  })
+  const refreshToken = generateToken({
+    payload: {
+      userId: user._id,
+      role: user.role,
+    },
+    secret: envVariables.JWT_REFRESH_TOKEN,
+    expiresIn: "7d",
+  })
 
   return {
-    token,
+    accessToken,
+    refreshToken,
     user: {
       id: user._id,
       name: user.name,

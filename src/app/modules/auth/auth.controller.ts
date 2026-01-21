@@ -6,19 +6,26 @@ import sendResponse from "../../../lib/sendResponse";
 const loginController = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const result = await AuthService.loginService(email, password);
-  res.cookie("access_token", result?.token, {
+  const {accessToken, refreshToken, user  } = await AuthService.loginService(email, password);
+  res.cookie("access_token", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     path: "/",
-    maxAge: 1000 * 60 * 60, // 1 hour
+    maxAge: 1000 * 60 * 5,
+  });
+  res.cookie("refresh_token", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   });
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Login successful",
-    data: result,
+    data: user,
   });
 });
 
