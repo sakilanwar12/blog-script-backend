@@ -29,6 +29,24 @@ const loginController = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const refreshTokenController = catchAsync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+  const {accessToken, user } = await AuthService.refreshToken(refreshToken);
+  res.cookie("access_token", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 1000 * 60 * 5,
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Login successful",
+    data: user,
+  });
+});
 const meController = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const result = await AuthService.getMeService(user?.userId);
@@ -44,4 +62,5 @@ const meController = catchAsync(async (req: Request, res: Response) => {
 export const AuthController = {
   loginController,
   meController,
+  refreshTokenController,
 };
