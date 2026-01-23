@@ -1,28 +1,25 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { envVariables } from "../../config";
+import { verifyToken } from "../../lib/generateToken";
 
 export const authMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const authHeader = req.headers.authorization;
-  let token;
+ 
+ const token = req.cookies?.access_token;
 
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  } else {
-    token = req.cookies.access_token || authHeader;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
-
   try {
-    const secret = process.env.JWT_SECRET;
+    const secret = envVariables.JWT_ACCESS_TOKEN;
     if (!secret) {
       throw new Error("JWT_SECRET is not defined");
     }
-    const decoded = jwt.verify(token, secret) as JwtPayload;
+    const decoded = verifyToken(token, secret);
     req.user = decoded;
     next();
   } catch (err) {

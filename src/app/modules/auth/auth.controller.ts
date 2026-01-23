@@ -7,14 +7,14 @@ const loginController = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const {accessToken, refreshToken, user  } = await AuthService.loginService(email, password);
-  res.cookie("accessToken", accessToken, {
+  res.cookie("access_token", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     path: "/",
     maxAge: 1000 * 60 * 5,
   });
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie("refresh_token", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -31,9 +31,8 @@ const loginController = catchAsync(async (req: Request, res: Response) => {
 
 const refreshTokenController = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
-  console.log("refresh token",refreshToken)
   const {accessToken, user } = await AuthService.refreshToken(refreshToken);
-  res.cookie("accessToken", accessToken, {
+  res.cookie("access_token", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
