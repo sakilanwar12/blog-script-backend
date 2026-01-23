@@ -96,8 +96,13 @@ const getMeService = async (userId: string) => {
   return user;
 };
 
+const logoutService = async (token: string) => {
+  await RefreshToken.findOneAndDelete({ token });
+};
+
 export const AuthService = {
   loginService,
   getMeService,
   refreshToken,
+  logoutService,
 };

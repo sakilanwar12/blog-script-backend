@@ -7,18 +7,12 @@ import { authMiddleware } from "../../middlewares/auth.middleware";
 const authRoutes = Router();
 
 authRoutes.post(
-    "/login",
-    validateRequest(loginValidationSchema),
-    AuthController.loginController
+  "/login",
+  validateRequest(loginValidationSchema),
+  AuthController.loginController,
 );
-authRoutes.post(
-    "/refresh-token",
-    AuthController.refreshTokenController
-);
-authRoutes.get(
-    "/me",
-    authMiddleware,
-    AuthController.meController
-);
+authRoutes.post("/refresh-token", AuthController.refreshTokenController);
+authRoutes.get("/me", authMiddleware, AuthController.meController);
+authRoutes.post("/logout", AuthController.logoutController);
 
 export default authRoutes;

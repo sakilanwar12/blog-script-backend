@@ -34,7 +34,7 @@ export const auth = async (
       });
     }
 
-    const decoded = jwt.verify(token, envVariables.JWT_SECRET) as {
+    const decoded = jwt.verify(token, envVariables.JWT_ACCESS_TOKEN) as {
       userId: string;
       role: string;
     };
