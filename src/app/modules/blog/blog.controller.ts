@@ -2,9 +2,13 @@ import { Request, Response } from "express";
 import catchAsync from "../../../lib/catchAsync";
 import sendResponse from "../../../lib/sendResponse";
 import { BlogService } from "./blog.services";
+import { AuthRequest } from "../../middlewares/checkAuth";
 
-const createBlog = catchAsync(async (req: Request, res: Response) => {
-  const result = await BlogService.createBlog(req.body);
+const createBlog = catchAsync(async (req: AuthRequest, res: Response) => {
+  const result = await BlogService.createBlog({
+    ...req.body,
+    authorId: req.user!.userId,
+  });
 
   sendResponse(res, {
     statusCode: 200,
@@ -37,7 +41,7 @@ const getABlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateBlog = catchAsync(async (req: Request, res: Response) => {
+const updateBlog = catchAsync(async (req: AuthRequest, res: Response) => {
   const result = await BlogService.updateBlog(req.params.id, req.body);
   sendResponse(res, {
     statusCode: 200,
@@ -47,7 +51,7 @@ const updateBlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const deleteABlog = catchAsync(async (req: Request, res: Response) => {
+const deleteABlog = catchAsync(async (req: AuthRequest, res: Response) => {
   const result = await BlogService.deleteABlog(req.params.id);
   sendResponse(res, {
     statusCode: 200,

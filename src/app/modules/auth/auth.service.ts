@@ -63,6 +63,9 @@ const loginService = async (email: string, password: string) => {
   };
 };
 const refreshToken = async (token: string) => {
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Refresh token is missing");
+  }
   const decodedToken = verifyToken(token, envVariables.JWT_REFRESH_TOKEN);
   const user = await User.findById(decodedToken.userId);
   if (!user) {

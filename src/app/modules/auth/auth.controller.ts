@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import catchAsync from "../../../lib/catchAsync";
 import sendResponse from "../../../lib/sendResponse";
+import { AuthRequest } from "../../middlewares/checkAuth";
 
 const loginController = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -34,8 +35,8 @@ const loginController = catchAsync(async (req: Request, res: Response) => {
 
 const refreshTokenController = catchAsync(
   async (req: Request, res: Response) => {
-    const { refreshToken } = req.cookies;
-    const { accessToken, user } = await AuthService.refreshToken(refreshToken);
+    const { refresh_token } = req.cookies;
+    const { accessToken, user } = await AuthService.refreshToken(refresh_token);
     res.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -52,9 +53,9 @@ const refreshTokenController = catchAsync(
     });
   },
 );
-const meController = catchAsync(async (req: Request, res: Response) => {
+const meController = catchAsync(async (req: AuthRequest, res: Response) => {
   const user = req.user;
-  const result = await AuthService.getMeService(user?.userId);
+  const result = await AuthService.getMeService(user!.userId);
 
   sendResponse(res, {
     statusCode: 200,
