@@ -1,19 +1,52 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import { IBlog } from "./blog.interface";
 
 const blogSchema = new Schema<IBlog>(
   {
-    title: { type: String, required: true },
-    slug: { type: String, required: false, unique: true },
-    content: { type: String, required: true },
-    author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    status: { type: String, enum: ["draft", "published"], default: "draft" },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    slug: {
+      type: String,
+      unique: true,
+      sparse: true, 
+    },
+
+    excerpt: {
+      type: String,
+      maxlength: 160, 
+      trim: true,
+    },
+    content: {
+      type: Schema.Types.Mixed, 
+      required: true,
+    },
+
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["draft", "published"],
+      default: "draft",
+    },
+
     isDeleted: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+  }
 );
 
 export default model<IBlog>("Blog", blogSchema);
+

@@ -9,7 +9,8 @@ export type TBlogStatus = `${EBlogStatus}`;
 
 export interface ICreateBlog {
   title: string;
-  content: string;
+  excerpt: string;
+  content: any;
   authorId: string;
   status?: TBlogStatus;
 }
@@ -17,7 +18,8 @@ export interface ICreateBlog {
 export interface IBlog extends Document {
   title: string;
   slug: string;
-  content: string;
+  excerpt: string;
+  content: any;
   author: Types.ObjectId;
   status: TBlogStatus;
   isDeleted: boolean;

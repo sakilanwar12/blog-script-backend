@@ -13,19 +13,18 @@ const createBlog = async (input: ICreateBlog): Promise<IBlog> => {
   const blog = await blogModel.create({
     title: input.title,
     slug: slug,
+    excerpt: input.excerpt,
     content: input.content,
     author: input.authorId,
     status: input.status,
   });
   return blog;
 };
-const getAllBlogs = async (
-  query: {
-    search?: string;
-    page?: number;
-    limit?: number;
-  }
-): Promise<{
+const getAllBlogs = async (query: {
+  search?: string;
+  page?: number;
+  limit?: number;
+}): Promise<{
   data: IBlog[];
   meta: {
     total: number;
@@ -36,11 +35,7 @@ const getAllBlogs = async (
     hasPrev: boolean;
   };
 }> => {
-  const {
-    search = "",
-    page = 1,
-    limit = 10,
-  } = query;
+  const { search = "", page = 1, limit = 10 } = query;
 
   const skip = (page - 1) * limit;
 
@@ -59,6 +54,7 @@ const getAllBlogs = async (
   const [blogs, total] = await Promise.all([
     blogModel
       .find(filter)
+      .select("-content")
       .populate("author", "_id name email")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -99,9 +95,10 @@ const updateBlog = async (
   blogId: string,
   payload: Partial<{
     title: string;
-    content: string;
+    excerpt: string;
+    content: any;
     status: "draft" | "published";
-  }>
+  }>,
 ): Promise<IBlog | null> => {
   if (!payload || Object.keys(payload).length === 0) {
     throw new AppError(400, "Update payload is required");
@@ -125,6 +122,10 @@ const updateBlog = async (
 
     blog.title = payload.title;
     blog.slug = slug;
+  }
+
+  if (payload.excerpt) {
+    blog.excerpt = payload.excerpt;
   }
 
   if (payload.content) {
