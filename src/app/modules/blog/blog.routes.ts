@@ -8,7 +8,7 @@ router.post("/", checkAuth("admin", "superadmin"), BlogController.createBlog);
 router.get("/", BlogController.getAllBlogs);
 router.get("/:slug", BlogController.getABlog);
 router.patch(
-  "/:id",
+  "/:slug",
   checkAuth("admin", "superadmin"),
   BlogController.updateBlog,
 );

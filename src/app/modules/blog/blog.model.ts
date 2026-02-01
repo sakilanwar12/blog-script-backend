@@ -17,7 +17,7 @@ const blogSchema = new Schema<IBlog>(
 
     excerpt: {
       type: String,
-      maxlength: 160, 
+      maxLength: 160, 
       trim: true,
     },
     content: {

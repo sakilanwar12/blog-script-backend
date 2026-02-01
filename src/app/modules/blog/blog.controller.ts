@@ -42,7 +42,7 @@ const getABlog = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateBlog = catchAsync(async (req: AuthRequest, res: Response) => {
-  const result = await BlogService.updateBlog(req.params.id, req.body);
+  const result = await BlogService.updateBlog(req.params.slug, req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,

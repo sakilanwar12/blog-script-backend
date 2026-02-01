@@ -92,7 +92,7 @@ const getABlog = async (slug: string): Promise<IBlog> => {
 };
 
 const updateBlog = async (
-  blogId: string,
+  blogSlug: string,
   payload: Partial<{
     title: string;
     excerpt: string;
@@ -104,7 +104,8 @@ const updateBlog = async (
     throw new AppError(400, "Update payload is required");
   }
 
-  const blog = await blogModel.findById(blogId);
+
+const blog = await blogModel.findOne({ slug: blogSlug });
 
   if (!blog) {
     throw new AppError(404, "Blog not found");
@@ -116,7 +117,7 @@ const updateBlog = async (
     let slug = baseSlug;
     let counter = 1;
 
-    while (await blogModel.exists({ slug, _id: { $ne: blogId } })) {
+    while (await blogModel.exists({ slug, _id: { $ne: blogSlug } })) {
       slug = `${baseSlug}-${counter++}`;
     }
 
