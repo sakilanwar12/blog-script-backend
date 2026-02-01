@@ -13,7 +13,7 @@ router.patch(
   BlogController.updateBlog,
 );
 router.delete(
-  "/:id",
+  "/",
   checkAuth("admin", "superadmin"),
   BlogController.deleteABlog,
 );

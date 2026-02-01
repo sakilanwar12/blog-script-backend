@@ -52,11 +52,23 @@ const updateBlog = catchAsync(async (req: AuthRequest, res: Response) => {
 });
 
 const deleteABlog = catchAsync(async (req: AuthRequest, res: Response) => {
-  const result = await BlogService.deleteABlog(req.params.id);
+    const ids = req.body.ids;
+
+  if (!ids || (Array.isArray(ids) && ids.length === 0)) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: "No blog IDs provided for deletion",
+      data:"No blog IDs provided for deletion"
+    });
+  }
+
+
+  const result = await BlogService.deleteABlog(ids);
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Blog deleted successfully",
+    message: Array.isArray(ids) ? "Blogs deleted successfully" : "Blog deleted successfully",
     data: result,
   });
 });

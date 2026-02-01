@@ -141,17 +141,20 @@ const blog = await blogModel.findOne({ slug: blogSlug });
 
   return blog;
 };
-const deleteABlog = async (blogId: string) => {
-  const blog = await blogModel.findById(blogId);
 
-  if (!blog || blog.isDeleted) {
-    throw new AppError(404, "Blog not found");
+export const deleteABlog = async (ids: string[] | string) => {
+  // normalize to array
+  const idArray = Array.isArray(ids) ? ids : [ids];
+
+  if (idArray.length === 0) {
+    throw new AppError(400,"No IDs provided for deletion");
   }
 
-  blog.isDeleted = true;
-  await blog.save();
+  const result = await blogModel.deleteMany({ _id: { $in: idArray } });
 
-  return blog;
+  return {
+    deletedCount: result.deletedCount,
+  };
 };
 export const BlogService = {
   createBlog,
