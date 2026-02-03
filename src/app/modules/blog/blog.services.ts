@@ -1,5 +1,5 @@
 import { AppError } from "../../../lib/AppError";
-import { IBlog, ICreateBlog } from "./blog.interface";
+import { IBlog, ICreateBlog, TBlogStatus } from "./blog.interface";
 import blogModel from "./blog.model";
 import { slugify } from "js-utility-method";
 const createBlog = async (input: ICreateBlog): Promise<IBlog> => {
@@ -24,6 +24,7 @@ const getAllBlogs = async (query: {
   search?: string;
   page?: number;
   limit?: number;
+  post_status?: TBlogStatus;
 }): Promise<{
   data: IBlog[];
   meta: {
@@ -35,14 +36,24 @@ const getAllBlogs = async (query: {
     hasPrev: boolean;
   };
 }> => {
-  const { search = "", page = 1, limit = 10 } = query;
+  const { search = "", page = 1, limit = 10, post_status } = query;
 
   const skip = (page - 1) * limit;
 
-  const filter: any = {
-    isDeleted: false,
-  };
+  const filter: any = {};
 
+  // Status filtering
+  if (post_status === "trashed") {
+    // Trash tab
+    filter.status = "trashed";
+  } else if (post_status === "published") {
+    filter.status = "published";
+  } else if (post_status === "draft") {
+    filter.status = "draft";
+  } else {
+    // ALL tab → published + draft
+    filter.status = { $in: ["published", "draft"] };
+  }
   // 🔍 Search
   if (search) {
     filter.$or = [
