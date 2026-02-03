@@ -3,6 +3,8 @@ import { Document, Types } from "mongoose";
 export enum EBlogStatus {
   DRAFT = "draft",
   PUBLISHED = "published",
+  TRASHED = "trashed",
+  DELETE = "delete"
 }
 
 export type TBlogStatus = `${EBlogStatus}`;

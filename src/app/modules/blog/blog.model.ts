@@ -33,7 +33,7 @@ const blogSchema = new Schema<IBlog>(
 
     status: {
       type: String,
-      enum: ["draft", "published"],
+      enum: ["draft", "published","trashed","delete"],
       default: "draft",
     },
 
